@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 5001;
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 //middleware
 app.use(cors());
 app.use(express.json());
@@ -31,16 +31,23 @@ async function run() {
       .db("userInputDB")
       .collection("userInput");
 
-    //post or create data or client to send data to the server and send database
+    //post or create data or client to send data to the server and send database 01
     app.post("/userInput", async (req, res) => {
       const userInput = req.body;
       const result = await userInputCollection.insertOne(userInput);
       res.send(result);
       console.log(result);
     });
-    //read data to database or get data
+    //read data to database or get data 02
     app.get("/userInput", async (req, res) => {
       const result = await userInputCollection.find().toArray();
+      res.send(result);
+    });
+    //delete data to database 03
+    app.delete("/userInput/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await userInputCollection.deleteOne(query);
       res.send(result);
     });
 
