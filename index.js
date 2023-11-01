@@ -58,7 +58,29 @@ async function run() {
       const result = await userInputCollection.findOne(query);
       res.send(result);
     });
-    
+    //now to you can update your data
+    app.put("/userInput/:id", async (req, res) => {
+      const id = req.params.id;
+      const data = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedData = {
+        $set: {
+          img: data.img,
+          name: data.name,
+          shortDescription: data.shortDescription,
+          price: data.price,
+          rating: data.rating,
+          category: data.category,
+        },
+      };
+      const result = await userInputCollection.updateOne(
+        filter,
+        updatedData,
+        options
+      );
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
